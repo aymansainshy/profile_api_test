@@ -2,8 +2,11 @@ from rest_framework.views import APIView
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.authentication import TokenAuthentication
 
 from profile_api import serializers
+from profile_api import models
+from profile_api import permissions
 
 """ ////////////////////////////////////////////// [ ApiView ] //////////////////////////////////////////////// """
 class HelloApiView(APIView):
@@ -80,3 +83,13 @@ class HelloViewSet(viewsets.ViewSet):
     def destroy(self, request, pk=None):
         """Hendel deleting an Object by it's Id """
         return Response({'http_Method' : 'DELETE'})         
+
+""" ////////////////////////////////////////////// [ UserProfileViewSet ] //////////////////////////////////////////////// """
+class UserProfileViewSet(viewsets.ModelViewSet):
+    """Handel creating and updating profile"""
+    serializer_class = serializers.UserProfileSerializer
+
+    queryset = models.UserProfile.objects.all()    
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (permissions.UpdateOwnProfile,)
+ 
